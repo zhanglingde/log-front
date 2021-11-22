@@ -24,10 +24,11 @@ Vue.prototype.deleteRequest = deleteRequest;
 Vue.config.productionTip = false
 
 // 引入依赖并使用ElementUI 全局配置组件 mini
-Vue.use(ElementUI, {size: 'small'});
+Vue.use(ElementUI);
 
 /* eslint-disable no-new */
 new Vue({
   router,
   render: h => h(App)
+//    app 是 index.html 中 div 的 id
 }).$mount('#app')

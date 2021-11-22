@@ -1,30 +1,16 @@
 <template>
     <div>
-        test
-    <el-container>
-        <el-header class="homeHeader">
-            <div class="title">微人事</div>
-            <el-dropdown class="userInfo" @command="commandHandler">
-                <span class="el-dropdown-link">
-                    {{ user.name }}
-                    <i>
-                        <img :src="user.userface">
-                    </i>
-                </span>
-                <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item command="userInfo">个人中心</el-dropdown-item>
-                    <el-dropdown-item command="setting">设置</el-dropdown-item>
-                    <el-dropdown-item command="logout" divided>注销登录</el-dropdown-item>
-                </el-dropdown-menu>
-            </el-dropdown>
-        </el-header>
         <el-container>
-            <el-aside width="200px">Aside</el-aside>
-            <el-main>Main</el-main>
+            <el-header class="homeHeader">
+                <div class="title">日志</div>
+            </el-header>
+            <el-container>
+                <el-aside width="200px">Aside</el-aside>
+                <el-main>Main</el-main>
+            </el-container>
         </el-container>
-    </el-container>
-    </div>
 
+    </div>
 </template>
 
 <script>
@@ -36,7 +22,19 @@ export default {
             user: JSON.parse(window.sessionStorage.getItem("user"))
         }
     },
+    mounted() {
+        this.hello()
+    },
     methods: {
+        hello() {
+            this.getRequest("/hello",resp=>{
+                if (resp) {
+                    console.log("调用成功");
+                }else{
+                    console.log("调用失败");
+                }
+            })
+        },
         commandHandler(cmd) {
             if (cmd == 'logout') {
                 this.$confirm('此操作将注销登录, 是否继续?', '提示', {

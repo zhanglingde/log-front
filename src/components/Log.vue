@@ -1,52 +1,66 @@
 <template>
-  <div >
-      <el-row class="tac">
-          <el-col :span="12">
-              <h5>默认颜色</h5>
-              <el-menu
-                  default-active="2"
-                  class="el-menu-vertical-demo"
-                  @open="handleOpen"
-                  @close="handleClose">
-                  <el-submenu index="1">
-                      <template slot="title">
-                          <i class="el-icon-location"></i>
-                          <span>导航一</span>
-                      </template>
-                      <el-menu-item-group>
-                          <template slot="title">分组一</template>
-                          <el-menu-item index="1-1">选项1</el-menu-item>
-                          <el-menu-item index="1-2">选项2</el-menu-item>
-                      </el-menu-item-group>
-                      <el-menu-item-group title="分组2">
-                          <el-menu-item index="1-3">选项3</el-menu-item>
-                      </el-menu-item-group>
-                      <el-submenu index="1-4">
-                          <template slot="title">选项4</template>
-                          <el-menu-item index="1-4-1">选项1</el-menu-item>
-                      </el-submenu>
-                  </el-submenu>
-                  <el-menu-item index="2">
-                      <i class="el-icon-menu"></i>
-                      <span slot="title">导航二</span>
-                  </el-menu-item>
-              </el-menu>
-          </el-col>
-      </el-row>
-  </div>
+    <div>
+        <div>
+            <el-table
+                :data="logs"
+                height="730"
+                border
+                fit="true"
+                style="width: 100%">
+                <el-table-column
+                    type="selection"
+                    width="55">
+                </el-table-column>
+                <el-table-column prop="host"
+                                 label="客户端"
+                                 width="180">
+                </el-table-column>
+                <el-table-column prop="level"
+                                 label="等级"
+                                 width="180">
+                </el-table-column>
+                <el-table-column prop="loggerName"
+                                 label="位置"
+                                 width="180">
+                </el-table-column>
+                <el-table-column
+                    prop="message"
+                    label="消息"
+                    height="80"
+                    width="180">
+                </el-table-column>
+                <el-table-column
+                    prop="threadName"
+                    label="线程">
+                </el-table-column>
+            </el-table>
+        </div>
+    </div>
 </template>
 
 <script>
 export default {
-    methods: {
-        handleOpen(key, keyPath) {
-            console.log(key, keyPath);
-        },
-        handleClose(key, keyPath) {
-            console.log(key, keyPath);
+    name: "SysBasic",
+    data(){
+        return{
+            logs:[]
+        }
+    },
+    mounted() {
+        this.initLogs();
+    },
+    methods:{
+        initLogs(){
+            this.getRequest("/system/log/").then(resp=>{
+                if(resp){
+                    this.logs = resp.data;
+                }
+            })
         }
     }
 }
 </script>
 
+<style scoped>
 
+</style>

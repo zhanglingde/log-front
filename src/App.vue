@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <!-- router-view 是一个占位符   -->
     <router-view/>
   </div>
 </template>
