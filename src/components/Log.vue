@@ -17,7 +17,7 @@
                         </el-option>
                     </el-select>
                 </el-col>
-                <el-col :span="6">
+                <el-col :span="4">
                     消息：
                     <el-input v-model="search.message"
                               placeholder="消息"
@@ -25,23 +25,36 @@
                               @keydown.enter.native="initLogs"
                               style="width:200px;"></el-input>
                 </el-col>
-                <el-col :span="12">
-                    <div class="block">
-                        <span class="demonstration">开始时间-结束时间</span>
-                        <el-date-picker
-                            v-model="search.date"
-                            type="datetimerange"
-                            value-format="yyyy-MM-dd HH:mm:ss"
-                            range-separator="至"
-                            start-placeholder="开始日期"
-                            end-placeholder="结束日期"
-                            @change="initLogs">
-                        </el-date-picker>
-                    </div>
+                <el-col :span="8">
+                    时间：
+                    <el-time-picker
+                        is-range
+                        v-model="search.date"
+                        range-separator="至"
+                        value-format="HH:mm:ss"
+                        start-placeholder="开始时间"
+                        end-placeholder="结束时间"
+                        placeholder="选择时间范围"
+                        @change="initLogs">
+                    </el-time-picker>
 
                 </el-col>
-
-
+<!--                <el-col :span="4">-->
+<!--                    <div class="block">-->
+<!--                        <span class="demonstration">日期</span>-->
+<!--                        <el-date-picker-->
+<!--                            v-model="search.day"-->
+<!--                            type="date"-->
+<!--                            value-format="yyyy-MM-dd"-->
+<!--                            placeholder="选择日期"-->
+<!--                            @change="initLogs">-->
+<!--                        </el-date-picker>-->
+<!--                    </div>-->
+<!--                </el-col>-->
+                <el-col :span="4" >
+                    <el-button type="primary"
+                               @click="initLogs">搜索</el-button>
+                </el-col>
             </el-row>
 
         </div>
@@ -108,69 +121,73 @@
 </template>
 
 <script>
-export default {
-    name: "SysBasic",
-    data() {
-        return {
-            logs: [],
-            levels: [{
-                value: 'DEBUG',
-                label: 'DEBUG'
-            }, {
-                value: 'INFO',
-                label: 'INFO'
-            }, {
-                value: 'ERROR',
-                label: 'ERROR'
-            }],
-            search: {
-                message: null,
-                level: null,
-                startTime: null,
-                endTime: null,
-                date: ['', ''],
-            },
-            total: 0,
-            page: 1,
-            size: 10,
-        }
-    },
-    mounted() {
-        this.initLogs();
-    },
-    methods: {
-        initLogs() {
-            let url = '/system/log/';
-            url += "?page=" + this.page + "&size=" + this.size;
-            if (this.search.message) {
-                url += "&message=" + this.search.message;
+    export default {
+        name: "SysBasic",
+        data() {
+            return {
+                logs: [],
+                levels: [{
+                    value: 'DEBUG',
+                    label: 'DEBUG'
+                }, {
+                    value: 'INFO',
+                    label: 'INFO'
+                }, {
+                    value: 'ERROR',
+                    label: 'ERROR'
+                }],
+                search: {
+                    message: null,
+                    level: null,
+                    startTime: null,
+                    endTime: null,
+                    date: ['', ''],
+                    day:''
+                },
+                total: 0,
+                page: 1,
+                size: 10,
             }
-            if (this.search.level) {
-                url += "&level=" + this.search.level;
-            }
-            if (this.search.date) {
-                this.search.startTime = this.search.date[0];
-                url += "&startTime=" + this.search.date[0];
-                url += "&endTime=" + this.search.date[1];
-            }
-            this.getRequest(url).then(resp => {
-                if (resp) {
-                    this.logs = resp.list;
-                    this.total = resp.total;
+        },
+        mounted() {
+            this.initLogs();
+        },
+        methods: {
+            initLogs() {
+                let url = '/system/log/';
+                url += "?page=" + this.page + "&size=" + this.size;
+                if (this.search.message) {
+                    url += "&message=" + this.search.message;
                 }
-            });
-        },
-        // 分页点击事件
-        currentChange(currentPage) {
-            this.page = currentPage;
-            this.initLogs();
-        },
-        sizeChange(currentSize) {
-            this.size = currentSize;
-            this.initLogs();
-        },
+                if (this.search.level) {
+                    url += "&level=" + this.search.level;
+                }
+                if (this.search.date) {
+                    this.search.startTime = this.search.date[0];
+                    url += "&startTime=" + this.search.date[0];
+                    url += "&endTime=" + this.search.date[1];
+                }
+                if (this.search.day) {
+                    url += "&day=" + this.search.day;
+                }
+                this.getRequest(url).then(resp => {
+                    if (resp) {
+                        this.logs = resp.list;
+                        this.total = resp.total;
+                    }
+                });
+            },
+            // 分页点击事件
+            currentChange(currentPage) {
+                this.page = currentPage;
+                this.initLogs();
+            },
+            sizeChange(currentSize) {
+                this.size = currentSize;
+                this.initLogs();
+            },
+        }
     }
-}
 </script>
 
 <style scoped>
