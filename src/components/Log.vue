@@ -3,7 +3,7 @@
         <div style="padding-bottom: 10px;">
             <el-row>
 
-                <el-col :span="4">
+                <el-col :span="3">
                     等级:
                     <el-select v-model="search.level" placeholder="Level"
                                style="width: 130px;"
@@ -17,7 +17,7 @@
                         </el-option>
                     </el-select>
                 </el-col>
-                <el-col :span="4">
+                <el-col :span="5">
                     消息：
                     <el-input v-model="search.message"
                               placeholder="消息"
@@ -39,19 +39,19 @@
                     </el-time-picker>
 
                 </el-col>
-<!--                <el-col :span="4">-->
-<!--                    <div class="block">-->
-<!--                        <span class="demonstration">日期</span>-->
-<!--                        <el-date-picker-->
-<!--                            v-model="search.day"-->
-<!--                            type="date"-->
-<!--                            value-format="yyyy-MM-dd"-->
-<!--                            placeholder="选择日期"-->
-<!--                            @change="initLogs">-->
-<!--                        </el-date-picker>-->
-<!--                    </div>-->
-<!--                </el-col>-->
-                <el-col :span="4" >
+                <el-col :span="5">
+                    <div class="block">
+                        <span class="demonstration">日期</span>
+                        <el-date-picker
+                            v-model="search.day"
+                            type="date"
+                            value-format="yyyy-MM-dd"
+                            placeholder="选择日期"
+                            @change="initLogs">
+                        </el-date-picker>
+                    </div>
+                </el-col>
+                <el-col :span="2" >
                     <el-button type="primary"
                                @click="initLogs">搜索</el-button>
                 </el-col>
@@ -172,8 +172,10 @@
                 }
                 this.getRequest(url).then(resp => {
                     if (resp) {
-                        this.logs = resp.list;
-                        this.total = resp.total;
+                        this.logs = resp.data.list;
+                        this.total = resp.data.total;
+                    }else {
+                        this.logs = '';
                     }
                 });
             },
