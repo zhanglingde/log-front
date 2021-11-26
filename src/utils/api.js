@@ -36,8 +36,8 @@ axios.interceptors.response.use(success => {
 })
 
 // 封装post请求
-// let base = 'api';          // 请求前缀 本地代理
-let base = '';          // 请求前缀
+let base = 'api';          // 请求前缀 本地代理
+// let base = '';          // 请求前缀
 
 export const postKeyValueRequest = (url, params) => {
     return axios({
