@@ -64,7 +64,6 @@
                 :data="logs"
                 height="730"
                 border
-
                 :row-class-name="tableRowClassName"
                 style="width: 100%">
                 <el-table-column align="center"
@@ -87,29 +86,48 @@
                                  label="位置"
                                  width="180">
                 </el-table-column>
+
+
                 <el-table-column prop="message"
                                  label="消息"
-                                 show-overflow-tooltip
                                  height="80"
                                  width="400">
+                    <!--                    <template slot-scope="scope">-->
+                    <!--                        <el-tooltip class="item" effect="dark" :content="scope.row.message" placement="top">-->
+                    <!--                            <el-button>上左</el-button>-->
+                    <!--                        </el-tooltip>-->
+                    <!--                    </template>-->
                 </el-table-column>
+
+
                 <el-table-column prop="stackTrace"
                                  label="异常"
                                  show-overflow-tooltip
                                  height="20px"
                                  width="400">
-<!--                    <template slot-scope="scope">-->
-<!--                        <el-popover placement="left" trigger="hover" width="400">-->
-<!--                            <div style="overflow-y: auto;height:500px" v-html="scope.row.stackTrace"></div>-->
-<!--                            <span-->
-<!--                                slot="reference"-->
-<!--                                v-html="scope.row.stackTrace"-->
-<!--                            ></span>-->
-<!--                        </el-popover>-->
-<!--                    </template>-->
+                    <template slot-scope="scope">
+                        <el-tooltip class="item" effect="dark" placement="top-end">
+                            <div slot="content">
+                                <span v-html="scope.row.stackTrace">
+
+                                </span>
+                            </div>
+                            <span>{{scope.row.stackTrace | ellipsis}}</span>
+                        </el-tooltip>
+                    </template>
+                    <!--                    <template slot-scope="scope">-->
+                    <!--                        <el-popover placement="left" trigger="hover" width="400">-->
+                    <!--                            <div style="overflow-y: auto;height:500px" v-html="scope.row.stackTrace"></div>-->
+                    <!--                            <span-->
+                    <!--                                slot="reference"-->
+                    <!--                                v-html="scope.row.stackTrace"-->
+                    <!--                            ></span>-->
+                    <!--                        </el-popover>-->
+                    <!--                    </template>-->
                 </el-table-column>
                 <el-table-column prop="threadName"
-                                 label="线程">
+                                 label="线程"
+                >
                 </el-table-column>
                 <el-table-column prop="createTime"
                                  label="时间">
@@ -129,91 +147,107 @@
 </template>
 
 <script>
-export default {
-    name: "SysBasic",
-    data() {
-        return {
-            logs: [],
-            levels: [{
-                value: 'DEBUG',
-                label: 'DEBUG'
-            }, {
-                value: 'INFO',
-                label: 'INFO'
-            }, {
-                value: 'ERROR',
-                label: 'ERROR'
-            }],
-            search: {
-                message: null,
-                level: null,
-                startTime: null,
-                endTime: null,
-                date: ['', ''],
-                day: ''
-            },
-            total: 0,
-            page: 1,
-            size: 20,
-        }
-    },
-    mounted() {
-        this.initLogs();
-    },
-    methods: {
-        tableRowClassName({row, rowIndex}) {
-            if (rowIndex === 1) {
-                return 'warning-row';
-            } else if (rowIndex === 3) {
-                return 'success-row';
+    export default {
+        name: "SysBasic",
+        data() {
+            return {
+
+                logs: [],
+                levels: [{
+                    value: 'DEBUG',
+                    label: 'DEBUG'
+                }, {
+                    value: 'INFO',
+                    label: 'INFO'
+                }, {
+                    value: 'ERROR',
+                    label: 'ERROR'
+                }],
+                search: {
+                    message: null,
+                    level: null,
+                    startTime: null,
+                    endTime: null,
+                    date: ['', ''],
+                    day: ''
+                },
+                total: 0,
+                page: 1,
+                size: 20,
             }
-            return '';
         },
-        initLogs() {
-            let url = '/system/log/';
-            url += "?page=" + this.page + "&size=" + this.size;
-            if (this.search.message) {
-                url += "&message=" + this.search.message;
-            }
-            if (this.search.level) {
-                url += "&level=" + this.search.level;
-            }
-            if (this.search.date) {
-                this.search.startTime = this.search.date[0];
-                url += "&startTime=" + this.search.date[0];
-                url += "&endTime=" + this.search.date[1];
-            }
-            if (this.search.day) {
-                url += "&day=" + this.search.day;
-            }
-            this.getRequest(url).then(resp => {
-                if (resp) {
-                    this.logs = resp.data.list;
-                    this.total = resp.data.total;
-                } else {
-                    this.logs = '';
+        filters: {
+            ellipsis(value) {
+                if (!value) return ''
+                if (value.length > 32) {
+                    return value.slice(0, 32) + '...'
                 }
-            });
+                return value
+            }
         },
-        // 分页点击事件
-        currentChange(currentPage) {
-            this.page = currentPage;
+        mounted() {
             this.initLogs();
         },
-        sizeChange(currentSize) {
-            this.size = currentSize;
-            this.initLogs();
-        },
-    }
-}
+        methods: {
+            tableRowClassName({row, rowIndex}) {
+                if (row.level == "WARN") {
+                    return 'warning-row';
+                } else if (row.level == "INFO") {
+                    return 'success-row';
+                } else if (row.level == "ERROR") {
+                    return 'error-row';
+                }
+                return '';
+            },
+            initLogs() {
+                let url = '/system/log/';
+                url += "?page=" + this.page + "&size=" + this.size;
+                if (this.search.message) {
+                    url += "&message=" + this.search.message;
+                }
+                if (this.search.level) {
+                    url += "&level=" + this.search.level;
+                }
+                if (this.search.date) {
+                    this.search.startTime = this.search.date[0];
+                    url += "&startTime=" + this.search.date[0];
+                    url += "&endTime=" + this.search.date[1];
+                }
+                if (this.search.day) {
+                    url += "&day=" + this.search.day;
+                }
+                this.getRequest(url).then(resp => {
+                    if (resp) {
+                        this.logs = resp.data.list;
+                        this.total = resp.data.total;
+                    } else {
+                        this.logs = '';
+                    }
+                });
+            },
+            // 分页点击事件
+            currentChange(currentPage) {
+                this.page = currentPage;
+                this.initLogs();
+            },
+            sizeChange(currentSize) {
+                this.size = currentSize;
+                this.initLogs();
+            },
+        }
+    };
 </script>
 
-<style scoped>
-.el-table .warning-row {
-    background: #918060;
-}
+<style>
+    .el-table .warning-row {
+        background: oldlace;
+    }
 
-.el-table .success-row {
-    background: #94b682;
-}
+    .el-table .success-row {
+        background: #f0f9eb;
+    }
+    .el-table .error-row {
+        background: #fde2e2;
+    }
+
 </style>

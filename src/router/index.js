@@ -22,16 +22,16 @@ export default new Router({
             name: '导航一',
             component: Home,
             children: [
-                {
-                    path: '/test1',
-                    name: '选项一',
-                    component: Test1
-                }, {
+                 {
                     path: '/test2',
                     name: '选项二',
                     component: Test2
                 }
             ]
+        },{
+            path: '/test1',
+            name: '选项一',
+            component: Test1
         }
     ]
 })

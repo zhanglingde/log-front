@@ -1,92 +1,126 @@
 <template>
     <div>
-        <el-container>
-            <el-header class="homeHeader">
-                <div class="title">日志</div>
-            </el-header>
-            <el-container>
-                <el-aside width="200px">Aside</el-aside>
-                <el-main>Main</el-main>
-            </el-container>
-        </el-container>
 
+        <div>
+            Scroll down to see the bottom-right button.
+            <el-backtop target=".page-component__scroll .el-scrollbar__wrap" :bottom="100">
+                <div
+                    style="{
+                        height: 100%;
+                        width: 100%;
+                        background-color: #f2f5f6;
+                        box-shadow: 0 0 6px rgba(0,0,0, .12);
+                        text-align: center;
+                        line-height: 40px;
+                        color: #1989fa;
+                      }"
+                                >
+                    UP
+                </div>
+            </el-backtop>
+        </div>
     </div>
+
+
 </template>
 
-<script>
-export default {
+<style>
+    .el-table .warning-row {
+        background: oldlace;
+    }
 
-    name: "Home",
-    data() {
-        return {
-            user: JSON.parse(window.sessionStorage.getItem("user"))
-        }
-    },
-    mounted() {
-        this.hello()
-    },
-    methods: {
-        hello() {
-            this.getRequest("/hello",resp=>{
-                if (resp) {
-                    console.log("调用成功");
-                }else{
-                    console.log("调用失败");
+    .el-table .success-row {
+        background: #f0f9eb;
+    }
+</style>
+
+<script>
+    export default {
+        filters: {
+            ellipsis(value) {
+                if (!value) return ''
+                if (value.length > 32) {
+                    return value.slice(0, 32) + '...'
                 }
-            })
+                return value
+            }
         },
-        commandHandler(cmd) {
-            if (cmd == 'logout') {
-                this.$confirm('此操作将注销登录, 是否继续?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    this.getRequest("/logout");
-                    window.sessionStorage.removeItem("user");
-                    this.$router.replace("/");
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消'
-                    });
-                })
+        methods: {
+            tableRowClassName({row, rowIndex}) {
+                if (row.level == "ERROR") {
+                    console.log(rowIndex)
+                    return 'warning-row';
+                } else if (row.level == "INFO") {
+                    console.log("success-row" + rowIndex);
+                    return 'success-row';
+                }
+                return '';
+            },
+            initLogs() {
+                let url = '/system/log/';
+                url += "?page=" + this.page + "&size=" + this.size;
+                if (this.search.message) {
+                    url += "&message=" + this.search.message;
+                }
+                if (this.search.level) {
+                    url += "&level=" + this.search.level;
+                }
+                if (this.search.date) {
+                    this.search.startTime = this.search.date[0];
+                    url += "&startTime=" + this.search.date[0];
+                    url += "&endTime=" + this.search.date[1];
+                }
+                if (this.search.day) {
+                    url += "&day=" + this.search.day;
+                }
+                this.getRequest(url).then(resp => {
+                    if (resp) {
+                        this.logs = resp.data.list;
+                        this.total = resp.data.total;
+                    } else {
+                        this.logs = '';
+                    }
+                });
+            },
+            // 分页点击事件
+            currentChange(currentPage) {
+                this.page = currentPage;
+                this.initLogs();
+            },
+            sizeChange(currentSize) {
+                this.size = currentSize;
+                this.initLogs();
+            },
+        },
+        mounted() {
+            this.initLogs();
+        },
+        data() {
+            return {
+
+                logs: [],
+                levels: [{
+                    value: 'DEBUG',
+                    label: 'DEBUG'
+                }, {
+                    value: 'INFO',
+                    label: 'INFO'
+                }, {
+                    value: 'ERROR',
+                    label: 'ERROR'
+                }],
+                search: {
+                    message: null,
+                    level: null,
+                    startTime: null,
+                    endTime: null,
+                    date: ['', ''],
+                    day: ''
+                },
+                total: 0,
+                page: 1,
+                size: 20,
             }
         }
     }
-}
 </script>
-
-<style scoped>
-.homeHeader {
-    background: #109ce3;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0px 15px;
-    box-sizing: border-box;
-}
-
-.homeHeader .title {
-    font-size: 30px;
-    font-family: 华文行楷;
-    color: #ffffff;
-}
-
-.homeHeader .userInfo {
-    cursor: pointer;
-}
-
-.el-dropdown-link {
-    display: flex;
-    align-items: center; /*全局局中*/
-}
-
-.el-dropdown-link img {
-    width: 48px;
-    height: 48px;
-    border-radius: 24px;
-    margin-left: 8px;
-}
-
-</style>
