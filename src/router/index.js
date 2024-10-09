@@ -4,6 +4,7 @@ import Home from "../components/Home";
 import Test2 from "../components/Test2";
 import Test1 from "../components/Test1";
 import Log from "../components/Log";
+import WebSocket from "../components/WebSocket.vue";
 
 Vue.use(Router)
 
@@ -17,6 +18,10 @@ export default new Router({
             path: '/Log',
             name: 'Log',
             component: Log
+        },{
+            path: '/WebSocket',
+            name: 'WebSocket',
+            component: WebSocket
         },{
             path: '/home',
             name: '导航一',
