@@ -83,11 +83,15 @@
         webSocket.onmessage = function(msg) {
             //处理消息
             var serverMsg = msg.data;
-            var t_id = parseInt(serverMsg)    //服务端发过来的消息，ID，string需转化为int类型才能比较
+            const jsonObject = JSON.parse(serverMsg);  // 解析 webSocket 发送过来 json 消息
+            var t_id = parseInt(jsonObject.id)
+            const t_status = jsonObject.status;
+            console.log(jsonObject);
+
             for (var i = 0; i < vm.list.length; i++) {
                 var item = vm.list[i];
                 if(item.id == t_id){
-                    item.state = -1;
+                    item.state = t_status ? 1 : -1;  // 根据状态设置
                     vm.list.splice(i,1,item)
                     break;
                 }

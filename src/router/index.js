@@ -11,8 +11,8 @@ export default new Router({
     routes: [
         {
             path: '/',
-            name: 'Log',
-            component: Log
+            name: 'Home',
+            component: Home,
         }, {
             path: '/Log',
             name: 'Log',
@@ -23,9 +23,9 @@ export default new Router({
             component: Home,
             children: [
                  {
-                    path: '/test2',
+                    path: '/log',
                     name: '选项二',
-                    component: Test2
+                    component: Log
                 }
             ]
         },{

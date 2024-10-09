@@ -1,26 +1,50 @@
 <template>
     <div>
-
-        <div>
-            Scroll down to see the bottom-right button.
-            <el-backtop target=".page-component__scroll .el-scrollbar__wrap" :bottom="100">
-                <div
-                    style="{
-                        height: 100%;
-                        width: 100%;
-                        background-color: #f2f5f6;
-                        box-shadow: 0 0 6px rgba(0,0,0, .12);
-                        text-align: center;
-                        line-height: 40px;
-                        color: #1989fa;
-                      }"
-                                >
-                    UP
-                </div>
-            </el-backtop>
-        </div>
+        <el-row class="tac">
+            <el-col :span="12">
+                <h5>自定义颜色</h5>
+                <el-menu
+                    default-active="2"
+                    class="el-menu-vertical-demo"
+                    @open="handleOpen"
+                    @close="handleClose"
+                    background-color="#545c64"
+                    text-color="#fff"
+                    active-text-color="#ffd04b">
+                    <el-submenu index="1">
+                        <template slot="title">
+                            <i class="el-icon-location"></i>
+                            <span>导航一</span>
+                        </template>
+                        <el-menu-item-group>
+                            <template slot="title">分组一</template>
+                            <el-menu-item index="1-1">选项1</el-menu-item>
+                            <el-menu-item index="1-2">选项2</el-menu-item>
+                        </el-menu-item-group>
+                        <el-menu-item-group title="分组2">
+                            <el-menu-item index="1-3">选项3</el-menu-item>
+                        </el-menu-item-group>
+                        <el-submenu index="1-4">
+                            <template slot="title">选项4</template>
+                            <el-menu-item index="1-4-1">选项1</el-menu-item>
+                        </el-submenu>
+                    </el-submenu>
+                    <el-menu-item index="2">
+                        <i class="el-icon-menu"></i>
+                        <span slot="title">导航二</span>
+                    </el-menu-item>
+                    <el-menu-item index="3" disabled>
+                        <i class="el-icon-document"></i>
+                        <span slot="title">导航三</span>
+                    </el-menu-item>
+                    <el-menu-item index="4">
+                        <i class="el-icon-setting"></i>
+                        <span slot="title">导航四</span>
+                    </el-menu-item>
+                </el-menu>
+            </el-col>
+        </el-row>
     </div>
-
 
 </template>
 
@@ -35,92 +59,14 @@
 </style>
 
 <script>
-    export default {
-        filters: {
-            ellipsis(value) {
-                if (!value) return ''
-                if (value.length > 32) {
-                    return value.slice(0, 32) + '...'
-                }
-                return value
-            }
+export default {
+    methods: {
+        handleOpen(key, keyPath) {
+            console.log(key, keyPath);
         },
-        methods: {
-            tableRowClassName({row, rowIndex}) {
-                if (row.level == "ERROR") {
-                    console.log(rowIndex)
-                    return 'warning-row';
-                } else if (row.level == "INFO") {
-                    console.log("success-row" + rowIndex);
-                    return 'success-row';
-                }
-                return '';
-            },
-            initLogs() {
-                let url = '/system/log/';
-                url += "?page=" + this.page + "&size=" + this.size;
-                if (this.search.message) {
-                    url += "&message=" + this.search.message;
-                }
-                if (this.search.level) {
-                    url += "&level=" + this.search.level;
-                }
-                if (this.search.date) {
-                    this.search.startTime = this.search.date[0];
-                    url += "&startTime=" + this.search.date[0];
-                    url += "&endTime=" + this.search.date[1];
-                }
-                if (this.search.day) {
-                    url += "&day=" + this.search.day;
-                }
-                this.getRequest(url).then(resp => {
-                    if (resp) {
-                        this.logs = resp.data.list;
-                        this.total = resp.data.total;
-                    } else {
-                        this.logs = '';
-                    }
-                });
-            },
-            // 分页点击事件
-            currentChange(currentPage) {
-                this.page = currentPage;
-                this.initLogs();
-            },
-            sizeChange(currentSize) {
-                this.size = currentSize;
-                this.initLogs();
-            },
-        },
-        mounted() {
-            this.initLogs();
-        },
-        data() {
-            return {
-
-                logs: [],
-                levels: [{
-                    value: 'DEBUG',
-                    label: 'DEBUG'
-                }, {
-                    value: 'INFO',
-                    label: 'INFO'
-                }, {
-                    value: 'ERROR',
-                    label: 'ERROR'
-                }],
-                search: {
-                    message: null,
-                    level: null,
-                    startTime: null,
-                    endTime: null,
-                    date: ['', ''],
-                    day: ''
-                },
-                total: 0,
-                page: 1,
-                size: 20,
-            }
+        handleClose(key, keyPath) {
+            console.log(key, keyPath);
         }
     }
+}
 </script>

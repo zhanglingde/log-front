@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>调用API示例</title>
+</head>
+<body>
+<h1>调用打印机API</h1>
+<form id="apiForm">
+
+    <label for="dylx">类型 (dylx):</label>
+    <input type="text" id="dylx" name="dylx" value=""><br><br>
+
+    <label for="type">类型 (type):</label>
+    <input type="text" id="type" name="type" value=""><br><br>
+
+    <label for="xmlKey">XMLKey:</label>
+    <input type="text" id="xmlKey" name="XMLKey" value=""><br><br>
+
+    <button type="button" id="submitBtn">提交</button>
+</form>
+<p id="responseArea"></p>
+<!--
+PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iZ2JrIj8-PGJ1c2luZXNzIGlkPSI5MzAxMCIgY29tbWVudD0i5Y-R56Wo5omT5Y2wIj48Ym9keSB5eWx4ZG09IjEiPjxmcGx4ZG0-MzE8L2ZwbHhkbT48ZHlmcz4wPC9keWZzPjxrcHh4PjxmcGRtPjE0MDAyMjQxMzA8L2ZwZG0-PGZwaG0-MDQzMjIyMjY8L2ZwaG0-PHNmd3l4Ymp0ZHlzPjwvc2Z3eXhianRkeXM-PGZwenQ-MDA8L2ZwenQ-PGtwZnM-MDA8L2twZnM-PGtwcnE-MjAyNDAzMjU8L2twcnE-PGpxYmg-PC9qcWJoPjxza20-5pWw55S156Wo5Y-356CB77yaMjQxNDIwMDAwMDAwMTQzNjc1OTjlhajlm73lop7lgLznqI7lj5Hnpajmn6XpqozlubPlj7DvvJpodHRwczovL2ludi12ZXJpLmNoaW5hdGF4Lmdvdi5jbi88L3NrbT48anltPjI0MTQyMDAwMDAwMDE0MzY3NTk4PC9qeW0-PHRzcHo-PC90c3B6Pjx6c2ZzPjA8L3pzZnM-PHpoc2w-PC96aHNsPjx4aGR3c2JoPjkxMTQwMTAwNjY2NjMzNzk1SjwveGhkd3NiaD48eGhkd21jPuaZuuWlh-mTgei3r-iuvuWkh-aciemZkOWFrOWPuDwveGhkd21jPjx4aGR3ZHpkaD7lsbHopb_ovazlnovnu7zlkIjmlLnpnannpLrojIPljLrllJDmp5DkuqfkuJrlm63lnZ7ln47ljZfot68xODnlj7cwMzUxLTU2MTUzODE8L3hoZHdkemRoPjx4aGR3eWh6aD7kuK3lm73pk7booYzogqHku73mnInpmZDlhazlj7jlpKrljp_nu7zmlLnljLrmlK_ooYwxNDY3MDM0NDg4OTY8L3hoZHd5aHpoPjxnaGR3c2JoPjkxMzIwNDExTUExWVc4UEowMTwvZ2hkd3NiaD48Z2hkd21jPuW4uOW3nue6s-aQj-acuueUteiuvuWkh-aciemZkOWFrOWPuDwvZ2hkd21jPjxnaGR3ZHpkaD7msZ_oi4_nnIHluLjlt57luILmlrDljJfljLrltanlsbHot6835Y-3MTIwNuWupDEzODYxMDA0NDQxPC9naGR3ZHpkaD48Z2hkd3loemg-5Lit5Zu95bu66K6-6ZO26KGM6IKh5Lu95pyJ6ZmQ5YWs5Y-45bi45bee5YiG6KGMMzIwNTAxNjI4NjM2MDAwMDI0NjU8L2doZHd5aHpoPjxmeXhtIGNvdW50PSIxIj48Z3JvdXAgeGg9IjEiPjxmcGh4ej4wPC9mcGh4ej48c3BtYz4q5Lqk6YCa6L-Q6L6T6K6-5aSHKui9pui9rjwvc3BtYz48c3BzbT48L3Nwc20-PGdneGg-PC9nZ3hoPjxkdz7ku7Y8L2R3PjxzcHNsPjYwPC9zcHNsPjxkaj40NjQ2LjAxNzY5OTwvZGo-PGplPjI3ODc2MS4wNjwvamU-PGhzYno-PC9oc2J6PjxzcGJtPjEwOTAzMDMwMDAwMDAwMDAwMDA8L3NwYm0-PHNsPjAuMTM8L3NsPjxzZT4zNjIzOC45NDwvc2U-PHp4Ym0-PC96eGJtPjx5aHpjYnM-PC95aHpjYnM-PGxzbGJzPjwvbHNsYnM-PHp6c3RzZ2w-PC96enN0c2dsPjwvZ3JvdXA-PC9meXhtPjxoamplPjI3ODc2MS4wNjwvaGpqZT48aGpzZT4zNjIzOC45NDwvaGpzZT48anNoaj4zMTUwMDA8L2pzaGo-PGJ6PjwvYno-PHNrcj48L3Nrcj48ZmhyPuiigeaciDwvZmhyPjxrcHI-6Zu356a5PC9rcHI-PHlmcGRtPjwveWZwZG0-PHlmcGhtPjwveWZwaG0-PC9rcHh4PjwvYm9keT48L2J1c2luZXNzPg
+-->
+<script>
+    document.getElementById('submitBtn').addEventListener('click', function() {
+        const time = new Date().getTime(); // 当前时间戳
+        const messageID = time + 1;   // messageId 唯一就可以
+        const url = 'https://127.0.0.1:18086/v1/print/printer?messageID='+messageID;
+
+        const dylx = document.getElementById('dylx').value;
+        const type = document.getElementById('type').value;
+        const xmlKey = document.getElementById('xmlKey').value;
+
+        // 构造表单数据
+        const formData = new URLSearchParams();
+        formData.append('messageID', time);
+        formData.append('dylx', dylx);
+        formData.append('type', type);
+        formData.append('XMLKey', xmlKey);
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: formData.toString()
+        })
+            .then(response => response.text())
+            .then(data => {
+                // document.getElementById('responseArea').innerText = '响应: ' + data;
+                // 解析XML响应
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(data, "text/xml");
+
+                // 获取returncode节点的值
+                const returncode = xmlDoc.getElementsByTagName("returncode")[0].textContent;
+
+                // 显示响应
+                document.getElementById('responseArea').innerText = '响应: ' + data + '\n\nreturncode: ' + returncode;
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                document.getElementById('responseArea').innerText = '发生错误: ' + error;
+            });
+    });
+</script>
+</body>
+</html>
